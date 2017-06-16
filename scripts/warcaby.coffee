@@ -51,22 +51,26 @@ graczWykonujeRuch = (input) ->
   plansza=planszaNowa
   pozycjaStartowa = undefined
   pozycjaWynikowa = undefined
-  if !inputPoprawny(input)
-    return 'Niepoprawny format. Pozycja oryginalna i wynikowa muszą być rozdzielone za pomocą -> .'
+  if !inputRozdzielonyStrzalka(input)
+    return '[BŁĄD] Niepoprawny format. Pozycja oryginalna i wynikowa muszą być rozdzielone za pomocą -> .'
   pozycja = podzielInput(input)
-  if !obiePozycjePoprawne(pozycja)
-    return 'Niepoprawny format. Pozycja X i Y pionka muszą być rozdzielone za pomocą przecinka.'
+  if !obiePozycjeRozdzielonePrzecinkiem(pozycja)
+    return '[BŁĄD] Niepoprawny format. Pozycja X i Y pionka muszą być rozdzielone za pomocą przecinka.'
   pozycjaStartowa = podzielPozycjeNaXiY(pozycja[0])
   pozycjaWynikowa = podzielPozycjeNaXiY(pozycja[1])
+  if !pozycjePoprawne(pozycjaStartowa)
+    return '[BŁĄD] Pozycja '+pozycjaStartowa+' nie istnieje.'
+  if !pozycjePoprawne(pozycjaWynikowa)
+    return '[BŁĄD] Pozycja '+pozycjaWynikowa+' nie istnieje.'
   if poleJestPuste(plansza[pozycjaStartowa[0]-1][pozycjaStartowa[1]-1])
-    return 'Wybrane pole startowe jest puste!'
+    return '[BŁĄD] Wybrane pole startowe jest puste!'
   if poleJestZajetePrzezObcyPionek(plansza[pozycjaStartowa[0]-1][pozycjaStartowa[1]-1])
-    return 'Wybrane pol startowe jest zajete przez obcy pionek!'
+    return '[BŁĄD] Wybrane pole startowe jest zajete przez obcy pionek!'
   if !poleJestPuste(plansza[pozycjaWynikowa[0]-1][pozycjaWynikowa[1]-1])
-    return 'Wybrane pole wynikowe jest zajęte!'
-  return 'Sukces!'
+    return '[BŁĄD] Wybrane pole wynikowe jest zajęte!'
+  return '[SUKCES]\n'+planszaRysuj(plansza)
 	
-inputPoprawny = (input) ->
+inputRozdzielonyStrzalka = (input) ->
   if input.indexOf('->') != -1
     return true
   false
@@ -75,12 +79,18 @@ podzielInput = (input) ->
   output = input.split('->')
   output
 
-obiePozycjePoprawne = (input) ->
+pozycjePoprawne = (input) ->
+  for i of input
+    if input[i] < 1 or input[i] > 8
+      return false
+  true
+
+obiePozycjeRozdzielonePrzecinkiem = (input) ->
   for i of input
     if input[i].indexOf(',') == -1
       return false
   true
-
+  
 podzielPozycjeNaXiY = (input) ->
   output = input.split(',')
   output
