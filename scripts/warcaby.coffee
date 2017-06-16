@@ -62,6 +62,8 @@ graczWykonujeRuch = (input) ->
     return 'Wybrane pole startowe jest puste!'
   if poleJestZajetePrzezObcyPionek(plansza[pozycjaStartowa[0]-1][pozycjaStartowa[1]-1])
     return 'Wybrane pol startowe jest zajete przez obcy pionek!'
+  if !poleJestPuste(plansza[pozycjaWynikowa[0]-1][pozycjaWynikowa[1]-1])
+    return 'Wybrane pole wynikowe jest zajęte!'
   return 'Sukces!'
 	
 inputPoprawny = (input) ->
