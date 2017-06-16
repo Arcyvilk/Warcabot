@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "author": "Arcyvilk <blazemakerrr@gmail.com>",
-  "description": "Bot playing checkers1",
+  "description": "Bot playing checkers!",
   "dependencies": {
     "hubot": "^2.19.0",
     "hubot-diagnostics": "0.0.1",
