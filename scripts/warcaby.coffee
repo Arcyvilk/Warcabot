@@ -56,11 +56,11 @@ graczWykonujeRuch = (input) ->
   pozycja = podzielInput(input)
   if !obiePozycjePoprawne(pozycja)
     return 'Niepoprawny format. Pozycja X i Y pionka muszą być rozdzielone za pomocą przecinka.'
-  pozycjaStartowa = podzielPozycjeNaXiY(pozycja[0]) - 1
-  pozycjaWynikowa = podzielPozycjeNaXiY(pozycja[1]) - 1
-  if poleJestPuste(plansza[pozycjaStartowa])
+  pozycjaStartowa = podzielPozycjeNaXiY(pozycja[0])
+  pozycjaWynikowa = podzielPozycjeNaXiY(pozycja[1])
+  if poleJestPuste(plansza[pozycjaStartowa[0]-1][pozycjaStartowa[1]-1])
     return 'Wybrane pole startowe jest puste!'
-  if poleJestZajetePrzezObcyPionek(plansza[pozycjaStartowa])
+  if poleJestZajetePrzezObcyPionek(plansza[pozycjaStartowa[0]-1][pozycjaStartowa[1]-1])
     return 'Wybrane pol startowe jest zajete przez obcy pionek!'
   return 'Sukces!'
 	
