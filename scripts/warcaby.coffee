@@ -9,12 +9,18 @@
 
 module.exports = (warcabot) ->
 	
-	warcabot.respond /gra/i, (res) ->
+	warcabot.respond /start/i, (res) ->
 		res.send planszaRysuj(planszaNowa)
+	warcabot.respond /plansza/i, (res) ->
+		if plansza == ''
+			res.send "Nie jesteś obecnie w trakcie żadnej gry."
+		else res.send planszaRysuj(plansza)
+	warcabot.respond /git/i, (res) ->
+		res.send "https://github.com/Arcyvilk/Warcabot"
 	warcabot.respond /pomoc/i, (res) ->
 		res.send ("\nJesteś graczem białym. Można poruszać pionkami tylko po skosie. "+
 			"\nPrzegrywa ten, kto stracił wszystkie pionki."+
-			"\n\nPoruszanie się za pomocą komendy \"ruch x,y -> a,b\" . Przykład: ruch 6,3 -> 5,4")
+			"\n\nPoruszanie się za pomocą komendy \"ruch x,y -> a,b\" . Przykład: @warcabot ruch 6,3 -> 5,4")
 	warcabot.respond /ruch (.*)/i, (res) ->
 		res.send(graczWykonujeRuch(res.match[1]))
 	warcabot.respond /test/i, (res) ->
@@ -55,6 +61,8 @@ planszaNowa =
 	["O","","O","","O","","O",""],
 	["","O","","O","","O","","O"],
 	["O","","O","","O","","O",""]]
+	
+plansza = ''
 
 graczWykonujeRuch = (input) ->
   plansza=planszaNowa
