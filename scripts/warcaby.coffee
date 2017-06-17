@@ -18,11 +18,11 @@ module.exports = (warcabot) ->
 		res.send "https://github.com/Arcyvilk/Warcabot"
 	warcabot.respond /pomoc/i, (res) ->
 		res.send ("\n*Komendy:*"+
-			"\n`@warcabot pomoc         -` wyświetla pomoc"+
-			"\n`@warcabot start         -` rozpoczyna nową grę"+
-			"\n`@warcabot plansza       -` wyświetla ostatni stan planszy, jeśli taki był"+
-			"\n`@warcabot ruch x,y->a,b -` ruch pionka z pozycji [X,Y] na pozycję [A,B]"+
-			"\n`@warcabot git           -` załącza link do repozytorium"+
+			"`\n@warcabot pomoc         `- wyświetla pomoc"+
+			"`\n@warcabot start         `- rozpoczyna nową grę"+
+			"`\n@warcabot plansza       `- wyświetla ostatni stan planszy, jeśli taki był"+
+			"`\n@warcabot git           `- załącza link do repozytorium"+
+			"`\n@warcabot ruch x,y->a,b `- ruch pionka z pozycji [X,Y] na pozycję [A,B]"+
 			"\n\n*Zasady gry:*"+
 			"\nJesteś graczem białym. Można poruszać pionkami tylko po skosie i tylko w przód, chyba że bijesz/grasz damką. "+
 			"\nPrzegrywa ten, kto stracił wszystkie pionki."+
@@ -92,11 +92,10 @@ graczWykonujeRuch = (input) ->
     return '[BŁĄD] Wybrane pole startowe jest zajete przez obcy pionek!'
   if !poleJestPuste(plansza[pozycjaWynikowa[0]-1][pozycjaWynikowa[1]-1])
     return '[BŁĄD] Wybrane pole wynikowe jest zajęte!'
-  if wybranePoleNieSpelniaZasadGry(pozycjaStartowa, pozycjaWynikowa)
-    return 'Ruch niezgodny z zasadami!'
-	
+  if !wybranePoleSpelniaZasadyGry(pozycjaStartowa, pozycjaWynikowa, plansza[pozycjaStartowa[0]-1][pozycjaStartowa[1]-1])
+    return '[BŁĄD] Ruch niezgodny z zasadami!'
   plansza=zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza(plansza, pozycjaStartowa, pozycjaWynikowa, "O")
-  return '[SUKCES]\n'+planszaRysuj(plansza)
+  return planszaRysuj(plansza)  
   
 zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza = (plansza, pozycjaStartowa, pozycjaWynikowa, gracz) ->
   plansza[pozycjaWynikowa[0] - 1][pozycjaWynikowa[1] - 1] = plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1]
@@ -139,8 +138,49 @@ poleJestZajetePrzezObcyPionek = (input) ->
     return true
   false
 
-wybranePoleNieSpelniaZasadGry = (pozycjaStartowa, pozycjaWynikowa) ->
-  false
+wybranePoleSpelniaZasadyGry = (pozycjaStartowa, pozycjaWyjsciowa, pionek) ->
+  if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) != Math.abs(pozycjaStartowa[1] - (pozycjaWyjsciowa[1]))
+    return false
+  #damka (moze bic we wszystkie kierunki)
+  if pionek.indexOf('*') != -1
+    #bialy pionek
+    if pionek.indexOf('O') != -1
+      if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
+        return true
+      if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
+        if plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] == 'X'
+          return true
+        return false
+    #czarny pionek
+    if pionek.indexOf('X') != -1
+      if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
+        return true
+      if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
+        if plansza[pozycjaStartowa[0] + 1][pozycjaStartowa[1] + 1] == 'O'
+          return true
+        return false
+  #zwykly pionek (moze bic tylko do przodu)
+  #bialy pionek
+  if pionek == 'O'
+    if pozycjaStartowa[0] < pozycjaWyjsciowa[0]
+      return false
+    if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
+      return true
+    if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
+      if plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] == 'X'
+        return true
+      return false
+  #czarny pionek
+  if pionek == 'X'
+    if pozycjaStartowa[0] > pozycjaWyjsciowa[0]
+      return false
+    if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
+      return true
+    if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
+      if plansza[pozycjaStartowa[0] + 1][pozycjaStartowa[1] + 1] == 'O'
+        return true
+      return false
+  return true
 
 #------------------------------------------------------------------------------------- 
   
