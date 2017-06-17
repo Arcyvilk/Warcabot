@@ -8,13 +8,12 @@
 #-----------------------------------------------------------
 
 module.exports = (warcabot) ->
-	
 	warcabot.respond /start/i, (res) ->
-		res.send planszaRysuj(planszaNowa)
+		res.send nowaGra()
 	warcabot.respond /plansza/i, (res) ->
-		if plansza == ''
+		if planszaZapisana == undefined
 			res.send "Nie jesteś obecnie w trakcie żadnej gry."
-		else res.send planszaRysuj(plansza)
+		else res.send planszaRysuj(planszaZapisana)
 	warcabot.respond /git/i, (res) ->
 		res.send "https://github.com/Arcyvilk/Warcabot"
 	warcabot.respond /pomoc/i, (res) ->
@@ -23,9 +22,22 @@ module.exports = (warcabot) ->
 			"\n\nPoruszanie się za pomocą komendy \"ruch x,y -> a,b\" . Przykład: @warcabot ruch 6,3 -> 5,4")
 	warcabot.respond /ruch (.*)/i, (res) ->
 		res.send(graczWykonujeRuch(res.match[1]))
-	warcabot.respond /test/i, (res) ->
-		res.send '☺️'
 #----------------------------------------------------------------------
+	
+planszaZapisana = undefined
+
+nowaGra = () ->
+	planszaNowa = 
+		[["","X","","X","","X","","X"],
+		["X","","X","","X","","X",""],
+		["","X","","X","","X","","X"],
+		["","","","","","","",""],
+		["","","","","","","",""],
+		["O","","O","","O","","O",""],
+		["","O","","O","","O","","O"],
+		["O","","O","","O","","O",""]]
+	planszaZapisana = planszaNowa
+	planszaRysuj(planszaNowa)
 
 planszaRysuj = (plansza) ->
   output = ':black_large_square::one::two::three::four::five::six::seven::eight::black_large_square:'
@@ -52,22 +64,10 @@ planszaRysuj = (plansza) ->
     i++
   output + '\n:black_large_square::one::two::three::four::five::six::seven::eight::black_large_square:\n'
 
-planszaNowa = 
-	[["","X","","X","","X","","X"],
-	["X","","X","","X","","X",""],
-	["","X","","X","","X","","X"],
-	["","","","","","","",""],
-	["","","","","","","",""],
-	["O","","O","","O","","O",""],
-	["","O","","O","","O","","O"],
-	["O","","O","","O","","O",""]]
-	
-plansza = ''
-
 graczWykonujeRuch = (input) ->
-  plansza=planszaNowa
   pozycjaStartowa = undefined
   pozycjaWynikowa = undefined
+  plansza = planszaZapisana
   if !inputRozdzielonyStrzalka(input)
     return '[BŁĄD] Niepoprawny format. Pozycja oryginalna i wynikowa muszą być rozdzielone za pomocą -> .'
   pozycja = podzielInput(input)
