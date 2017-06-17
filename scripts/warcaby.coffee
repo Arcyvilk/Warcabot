@@ -29,9 +29,13 @@ planszaRysuj = (plansza) ->
     j = 0
     while j < 8
       if plansza[i][j] == 'X'
-        output += ':black_small_square:'
+        output += ':black_circle:'
+      if plansza[i][j] == 'X*'
+        output += ':large_blue_circle:'
       if plansza[i][j] == 'O'
-        output += ':black_square_button:'
+        output += ':white_circle:'
+      if plansza[i][j] == 'O*'
+        output += ':red_circle:'
       if plansza[i][j] == ''
         if (i + j) % 2 == 0
           output += ':white_large_square:'
@@ -45,10 +49,10 @@ planszaRysuj = (plansza) ->
 planszaNowa = 
 	[["","X","","X","","X","","X"],
 	["X","","X","","X","","X",""],
-	["","X","","X","","X","","X"],
+	["","X","","X","","O*","","X"],
 	["","","","","","","",""],
 	["","","","","","","",""],
-	["O","","O","","O","","O",""],
+	["O","","X*","","O","","O",""],
 	["","O","","O","","O","","O"],
 	["O","","O","","O","","O",""]]
 
