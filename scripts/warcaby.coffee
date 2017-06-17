@@ -10,7 +10,6 @@
 module.exports = (warcabot) ->
 	
 	warcabot.respond /gra/i, (res) ->
-		res.send "clear"
 		res.send planszaRysuj(planszaNowa)
 	warcabot.respond /pomoc/i, (res) ->
 		res.send ("\nJesteś graczem białym. Można poruszać pionkami tylko po skosie. "+
@@ -23,23 +22,28 @@ module.exports = (warcabot) ->
 #----------------------------------------------------------------------
 
 planszaRysuj = (plansza) ->
-  output = '\n     1   2   3   4   5   6   7   8\n  __________________________________\n  ----------------------------------'
+  output = ':black_large_square::one::two::three::four::five::six::seven::eight::black_large_square:'
   i = 0
   while i < 8
-    output += '\n'
-    output += i + 1 + ' ||'
+    output += '\n' + zamienLiczbyNaEmoji(i + 1)
     j = 0
     while j < 8
-      pionek = plansza[i][j]
-      if !pionek
-        pionek = ' '
-      output += ' ' + pionek + ' |'
+      if plansza[i][j] == 'X'
+        output += ':black_circle:'
+      if plansza[i][j] == 'O'
+        output += ':white_circle:'
+      else
+        if (i + j) % 2 == 0
+          output += ':white_large_square:'
+        else
+          output += ':black_large_square:'
       j++
-    output += '\n  ----------------------------------'
+    output += zamienLiczbyNaEmoji(i + 1)
     i++
-  output
-		
-planszaNowa = [["","X","","X","","X","","X"],
+  output + '\n:black_large_square::one::two::three::four::five::six::seven::eight::black_large_square:\n'
+
+planszaNowa = 
+	[["","X","","X","","X","","X"],
 	["X","","X","","X","","X",""],
 	["","X","","X","","X","","X"],
 	["","","","","","","",""],
@@ -72,7 +76,9 @@ graczWykonujeRuch = (input) ->
   if wybranePoleNieSpelniaZasadGry(pozycjaStartowa, pozycjaWynikowa)
     return 'Ruch niezgodny z zasadami!'
   return '[SUKCES]\n'+planszaRysuj(plansza)
-	
+
+#-------------------------------------------------------------------------------------
+  
 inputRozdzielonyStrzalka = (input) ->
   if input.indexOf('->') != -1
     return true
@@ -110,83 +116,27 @@ poleJestZajetePrzezObcyPionek = (input) ->
 
 wybranePoleNieSpelniaZasadGry = (pozycjaStartowa, pozycjaWynikowa) ->
   false
-	
-	
-	
-	
-#---------------- to samo tylko w JS
-#
-#
-#var planszaRysuj = function(plansza) {
-#	var output="\n    1| 2| 3| 4| 5| 6| 7| 8\n__________________________";
-#
-#	for (var i=0; i<8; i++){
-#    output+="\n";
-#    output+=i+1;
-#	    for (var j=0; j<8; j++){
-#        	var pionek = plansza[i][j];
-#        	if (!pionek)
-#          		pionek = "  ";
-#	      	output += pionek + "|";
-#	    }
-#    output+="\n__________________________";
-#	}	
-#	return output;
-#}
-#// ruch 6,2->5,3
-#
-#var input = "ruch 6,2->5,3";
-#
-#var inputPoprawny = function(input) {
-#  if (input.indexOf("->") !== -1)
-#    return true;
-#  return false;
-#};
-#var podzielInput = function(input) {
-#  var output = input.split("->");
-#	return output;
-#};
-#var obiePozycjePoprawne = function(input) {
-#  for (var i in input){
-#    if (input[i].indexOf(",") === -1)
-#      return false;
-#  }
-#  return true;
-#};
-#var podzielPozycjeNaXiY = function(input) {
-#  var output = input.split(",");
-#	return output;  
-#};
-#var PoleJestPuste = function(input) {
-#  if (!input)
-#    return true;
-#  return false;
-#};
-#var poleJestZajetePrzezObcyPionek = function(input) {
-#  if (input === "X")
-#    return true;
-#  return false;
-#};
-#
-#//----------
-#
-#var graczWykonujeRuch = function() {
-#  var pozycjaStartowa;
-#  var pozycjaWynikowa;
-#  
-#  if (!inputPoprawny)
-#    return res.send("Niepoprawny format. Pozycja oryginalna i wynikowa muszą być rozdzielone za pomocą -> .");
-#  var pozycja = podzielInput(input);
-#  if (!obiePozycjePoprawne(pozycja))
-#    return res.send("Niepoprawny format. Pozycja X i Y pionka muszą być rozdzielone za pomocą przecinka.");
-#  
-#  pozycjaStartowa = podzielPozycjeNaXiY(pozycja[0]);
-#  pozycjaWynikowa = podzielPozycjeNaXiY(pozycja[1]);
-#  
-#  if (poleJestPuste(plansza[pozycjaStartowa]))
-#		return res.send("Wybrane pole startowe jest puste!");
-#  if (poleJestZajetePrzezObcyPionek(plansza[pozycjaStartowa]))
-#    return res.send("Wybrane pol startowe jest zajete przez obcy pionek!");
-#  
-#  res.send("Sukces!");
-#};
+
+#------------------------------------------------------------------------------------- 
+  
+zamienLiczbyNaEmoji = (input) ->
+  switch input
+    when 1
+      return ':one:'
+    when 2
+      return ':two:'
+    when 3
+      return ':three:'
+    when 4
+      return ':four:'
+    when 5
+      return ':five:'
+    when 6
+      return ':six:'
+    when 7
+      return ':seven'
+    when 8
+      return ':eight:'
+    else
+      return ':black_large_square:'
+  return
