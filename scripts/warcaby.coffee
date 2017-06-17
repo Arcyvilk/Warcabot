@@ -29,9 +29,9 @@ planszaRysuj = (plansza) ->
     j = 0
     while j < 8
       if plansza[i][j] == 'X'
-        output += ':black_circle:'
+        output += ':black_small_square:'
       if plansza[i][j] == 'O'
-        output += ':white_circle:'
+        output += ':black_square_button:'
       if plansza[i][j] == ''
         if (i + j) % 2 == 0
           output += ':white_large_square:'
