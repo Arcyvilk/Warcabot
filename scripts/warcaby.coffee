@@ -32,7 +32,7 @@ planszaRysuj = (plansza) ->
         output += ':black_circle:'
       if plansza[i][j] == 'O'
         output += ':white_circle:'
-      else
+      if plansza[i][j] == ''
         if (i + j) % 2 == 0
           output += ':white_large_square:'
         else
@@ -134,7 +134,7 @@ zamienLiczbyNaEmoji = (input) ->
     when 6
       return ':six:'
     when 7
-      return ':seven'
+      return ':seven:'
     when 8
       return ':eight:'
     else
