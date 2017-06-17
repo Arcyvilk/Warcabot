@@ -18,11 +18,11 @@ module.exports = (warcabot) ->
 		res.send "https://github.com/Arcyvilk/Warcabot"
 	warcabot.respond /pomoc/i, (res) ->
 		res.send ("\n*Komendy:*"+
-			"`\n@warcabot pomoc         `- wyświetla pomoc"+
-			"`\n@warcabot start         `- rozpoczyna nową grę"+
-			"`\n@warcabot plansza       `- wyświetla ostatni stan planszy, jeśli taki był"+
-			"`\n@warcabot git           `- załącza link do repozytorium"+
-			"`\n@warcabot ruch x,y->a,b `- ruch pionka z pozycji [X,Y] na pozycję [A,B]"+
+			"\n`@warcabot pomoc         `- wyświetla pomoc"+
+			"\n`@warcabot start         `- rozpoczyna nową grę"+
+			"\n`@warcabot plansza       `- wyświetla ostatni stan planszy, jeśli taki był"+
+			"\n`@warcabot git           `- załącza link do repozytorium"+
+			"\n`@warcabot ruch x,y->a,b `- ruch pionka z pozycji [X,Y] na pozycję [A,B]"+
 			"\n\n*Zasady gry:*"+
 			"\nJesteś graczem białym. Można poruszać pionkami tylko po skosie i tylko w przód, chyba że bijesz/grasz damką. "+
 			"\nPrzegrywa ten, kto stracił wszystkie pionki."+
