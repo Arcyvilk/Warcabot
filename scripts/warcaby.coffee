@@ -10,6 +10,7 @@
 module.exports = (warcabot) ->
 	
 	warcabot.respond /gra/i, (res) ->
+		res.send "clear"
 		res.send planszaRysuj(planszaNowa)
 	warcabot.respond /pomoc/i, (res) ->
 		res.send ("\nJesteś graczem białym. Można poruszać pionkami tylko po skosie. "+
@@ -68,6 +69,8 @@ graczWykonujeRuch = (input) ->
     return '[BŁĄD] Wybrane pole startowe jest zajete przez obcy pionek!'
   if !poleJestPuste(plansza[pozycjaWynikowa[0]-1][pozycjaWynikowa[1]-1])
     return '[BŁĄD] Wybrane pole wynikowe jest zajęte!'
+  if wybranePoleNieSpelniaZasadGry(pozycjaStartowa, pozycjaWynikowa)
+    return 'Ruch niezgodny z zasadami!'
   return '[SUKCES]\n'+planszaRysuj(plansza)
 	
 inputRozdzielonyStrzalka = (input) ->
@@ -105,7 +108,8 @@ poleJestZajetePrzezObcyPionek = (input) ->
     return true
   false
 
-
+wybranePoleNieSpelniaZasadGry = (pozycjaStartowa, pozycjaWynikowa) ->
+  false
 	
 	
 	
