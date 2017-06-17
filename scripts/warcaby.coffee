@@ -49,10 +49,10 @@ planszaRysuj = (plansza) ->
 planszaNowa = 
 	[["","X","","X","","X","","X"],
 	["X","","X","","X","","X",""],
-	["","X","","X","","O*","","X"],
+	["","X","","X","","X","","X"],
 	["","","","","","","",""],
 	["","","","","","","",""],
-	["O","","X*","","O","","O",""],
+	["O","","O","","O","","O",""],
 	["","O","","O","","O","","O"],
 	["O","","O","","O","","O",""]]
 
@@ -79,8 +79,14 @@ graczWykonujeRuch = (input) ->
     return '[BŁĄD] Wybrane pole wynikowe jest zajęte!'
   if wybranePoleNieSpelniaZasadGry(pozycjaStartowa, pozycjaWynikowa)
     return 'Ruch niezgodny z zasadami!'
+	
+  plansza=zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza(plansza, pozycjaStartowa, pozycjaWynikowa, "O")
   return '[SUKCES]\n'+planszaRysuj(plansza)
-
+  
+zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza = (plansza, pozycjaStartowa, pozycjaWynikowa, gracz) ->
+  plansza[pozycjaWynikowa[0] - 1][pozycjaWynikowa[1] - 1] = plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1]
+  plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] = ''
+  plansza
 #-------------------------------------------------------------------------------------
   
 inputRozdzielonyStrzalka = (input) ->
