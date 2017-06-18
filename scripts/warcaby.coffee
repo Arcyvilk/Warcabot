@@ -9,7 +9,7 @@ module.exports = (warcabot) ->
 	warcabot.respond /start/i, (res) ->
 		res.send nowaGra()
 	warcabot.respond /test/i, (res) ->
-		res.send planszaZapisana
+		res.send wrogiPionek('O')
 	warcabot.respond /plansza/i, (res) ->
 		if planszaZapisana == undefined
 			res.send "Nie jesteś obecnie w trakcie żadnej gry."
@@ -96,7 +96,7 @@ graczWykonujeRuch = (input) ->
     return '[BŁĄD] Wybrane pole startowe jest zajete przez obcy pionek!'
   if !poleJestPuste(plansza[pozycjaWynikowa[0]-1][pozycjaWynikowa[1]-1])
     return '[BŁĄD] Wybrane pole wynikowe jest zajęte!'
-  if !wybranePoleSpelniaZasadyGry(pozycjaStartowa, pozycjaWynikowa, plansza[pozycjaStartowa[0]-1][pozycjaStartowa[1]-1])
+  if !wybranePoleSpelniaZasadyGry(pozycjaStartowa, pozycjaWynikowa, plansza)
     return '[BŁĄD] Ruch niezgodny z zasadami!'
   plansza=zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza(plansza, pozycjaStartowa, pozycjaWynikowa, "O")
   return planszaRysuj(plansza)  
@@ -152,28 +152,34 @@ poleJestZajetePrzezObcyPionek = (input) ->
     return true
   false
 
-wybranePoleSpelniaZasadyGry = (pozycjaStartowa, pozycjaWyjsciowa, pionek) ->
-  if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) != Math.abs(pozycjaStartowa[1] - (pozycjaWyjsciowa[1]))
-    return false
-  #damka (moze bic we wszystkie kierunki)
-  if pionek.indexOf('*') != -1
-    if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
-      return true
-    if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
-      if planszaZapisana[pozycjaStartowa[0] + 1][pozycjaStartowa[1] + 1] == wrogiPionek(pionek)
-        return true
-      return false
-  #zwykly pionek (moze bic tylko do przodu)
-  if pionek != ''
-    if pozycjaStartowa[0] < pozycjaWyjsciowa[0]
-      return false
-    if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
-      return true
-    if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
-      if planszaZapisana[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] == wrogiPionek(pionek)
-        return true
-      return false
-  return true
+wybranePoleSpelniaZasadyGry = (pozycjaStartowa, pozycjaWyjsciowa, plansza) ->
+	pionek=plansza[pozycjaStartowa[0]-1][pozycjaStartowa[1]-1]
+	#jesli nie porusza sie po przekatnej
+	if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) != Math.abs(pozycjaStartowa[1] - (pozycjaWyjsciowa[1]))
+		return false
+	#damka (moze bic we wszystkie kierunki)
+	if pionek.indexOf('*') != -1
+		if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
+			return true
+		if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
+			potencjalnaPozycjaWrogiegoPionkaX = parseInt(pozycjaWyjsciowa[0]) + parseInt((pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) / 2)
+			potencjalnaPozycjaWrogiegoPionkaY = parseInt(pozycjaWyjsciowa[1]) + parseInt((pozycjaStartowa[1] - (pozycjaWyjsciowa[1])) / 2)
+			if plansza[potencjalnaPozycjaWrogiegoPionkaX-1][potencjalnaPozycjaWrogiegoPionkaY-1].indexOf(wrogiPionek(pionek)) != -1
+				return true
+			return false
+	#zwykly pionek (moze bic tylko do przodu)
+	if pionek != ''
+		if pozycjaStartowa[0] < pozycjaWyjsciowa[0]
+			return false
+		if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
+			return true
+		if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
+			potencjalnaPozycjaWrogiegoPionkaX = parseInt(pozycjaWyjsciowa[0]) + parseInt((pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) / 2)
+			potencjalnaPozycjaWrogiegoPionkaY = parseInt(pozycjaWyjsciowa[1]) + parseInt((pozycjaStartowa[1] - (pozycjaWyjsciowa[1])) / 2)
+			if plansza[potencjalnaPozycjaWrogiegoPionkaX-1][potencjalnaPozycjaWrogiegoPionkaY-1].indexOf(wrogiPionek(pionek)) != -1
+				return true
+			return false
+	return true
 
 #------------------------------------------------------------------------------------- 
  
