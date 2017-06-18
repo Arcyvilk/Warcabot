@@ -148,7 +148,7 @@ wybranePoleSpelniaZasadyGry = (pozycjaStartowa, pozycjaWyjsciowa, pionek) ->
       if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
         return true
       if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
-        if plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] == 'X'
+        if planszaZapisana[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] == 'X'
           return true
         return false
     #czarny pionek
@@ -156,7 +156,7 @@ wybranePoleSpelniaZasadyGry = (pozycjaStartowa, pozycjaWyjsciowa, pionek) ->
       if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
         return true
       if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
-        if plansza[pozycjaStartowa[0] + 1][pozycjaStartowa[1] + 1] == 'O'
+        if planszaZapisana[pozycjaStartowa[0] + 1][pozycjaStartowa[1] + 1] == 'O'
           return true
         return false
   #zwykly pionek (moze bic tylko do przodu)
@@ -167,7 +167,7 @@ wybranePoleSpelniaZasadyGry = (pozycjaStartowa, pozycjaWyjsciowa, pionek) ->
     if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
       return true
     if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
-      if plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] == 'X'
+      if planszaZapisana[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] == 'X'
         return true
       return false
   #czarny pionek
@@ -177,7 +177,7 @@ wybranePoleSpelniaZasadyGry = (pozycjaStartowa, pozycjaWyjsciowa, pionek) ->
     if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
       return true
     if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
-      if plansza[pozycjaStartowa[0] + 1][pozycjaStartowa[1] + 1] == 'O'
+      if planszaZapisana[pozycjaStartowa[0] + 1][pozycjaStartowa[1] + 1] == 'O'
         return true
       return false
   return true
