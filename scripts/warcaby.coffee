@@ -29,6 +29,8 @@ module.exports = (warcabot) ->
 			"\nMożna bić tylko pojedyncze pionki, bo zabrakło mi czasu na porządne zaimplementowanie zasad.")
 	warcabot.respond /ruch (.*)/i, (res) ->
 		res.send(graczWykonujeRuch(res.match[1]))
+		res.send(":hourglass: Oczekiwanie na ruch Warcabota...")
+		res.send(aiWykonujeRuch())
 #----------------------------------------------------------------------
 	
 planszaZapisana = undefined
@@ -96,6 +98,10 @@ graczWykonujeRuch = (input) ->
     return '[BŁĄD] Ruch niezgodny z zasadami!'
   plansza=zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza(plansza, pozycjaStartowa, pozycjaWynikowa, "O")
   return planszaRysuj(plansza)  
+
+aiWykonujeRuch = () ->
+  output = 'Not implemented yet.'
+  output
   
 zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza = (plansza, pozycjaStartowa, pozycjaWynikowa, gracz) ->
   plansza[pozycjaWynikowa[0] - 1][pozycjaWynikowa[1] - 1] = plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1]
