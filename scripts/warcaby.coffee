@@ -30,9 +30,9 @@ module.exports = (warcabot) ->
 	warcabot.respond /ruch (.*)/i, (res) ->
 		ruchGracza = graczWykonujeRuch(res.match[1])
 		res.send(ruchGracza)
-		if !ruchGracza.startsWith('[BŁĄD]')
-			res.send ":hourglass: Oczekiwanie na ruch Warcabota..."
-			res.send aiWykonujeRuch()
+		#if !ruchGracza.startsWith('[BŁĄD]')
+		#	res.send ":hourglass: Oczekiwanie na ruch Warcabota..."
+		#	res.send aiWykonujeRuch()
 #----------------------------------------------------------------------
 	
 planszaZapisana = undefined
