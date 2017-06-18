@@ -31,8 +31,8 @@ module.exports = (warcabot) ->
 		ruchGracza = graczWykonujeRuch(res.match[1])
 		res.send(ruchGracza)
 		if !ruchGracza.startsWith('[BŁĄD]')
-			res.send(":hourglass: Oczekiwanie na ruch Warcabota...")
-			res.send(aiWykonujeRuch())
+			res.send ":hourglass: Oczekiwanie na ruch Warcabota..."
+			res.send aiWykonujeRuch()
 #----------------------------------------------------------------------
 	
 planszaZapisana = undefined
@@ -157,47 +157,31 @@ wybranePoleSpelniaZasadyGry = (pozycjaStartowa, pozycjaWyjsciowa, pionek) ->
     return false
   #damka (moze bic we wszystkie kierunki)
   if pionek.indexOf('*') != -1
-    #bialy pionek
-    if pionek.indexOf('O') != -1
-      if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
+    if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
+      return true
+    if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
+      if planszaZapisana[pozycjaStartowa[0] + 1][pozycjaStartowa[1] + 1] == wrogiPionek(pionek)
         return true
-      if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
-        if planszaZapisana[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] == 'X'
-          return true
-        return false
-    #czarny pionek
-    if pionek.indexOf('X') != -1
-      if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
-        return true
-      if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
-        if planszaZapisana[pozycjaStartowa[0] + 1][pozycjaStartowa[1] + 1] == 'O'
-          return true
-        return false
+      return false
   #zwykly pionek (moze bic tylko do przodu)
-  #bialy pionek
-  if pionek == 'O'
+  if pionek != ''
     if pozycjaStartowa[0] < pozycjaWyjsciowa[0]
       return false
     if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
       return true
     if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
-      if planszaZapisana[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] == 'X'
-        return true
-      return false
-  #czarny pionek
-  if pionek == 'X'
-    if pozycjaStartowa[0] > pozycjaWyjsciowa[0]
-      return false
-    if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
-      return true
-    if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
-      if planszaZapisana[pozycjaStartowa[0] + 1][pozycjaStartowa[1] + 1] == 'O'
+      if planszaZapisana[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] == wrogiPionek(pionek)
         return true
       return false
   return true
 
 #------------------------------------------------------------------------------------- 
-  
+ 
+wrogiPionek = (pionek) ->
+	if pionek.indexOf('O') != -1
+		return 'X'
+	return 'O'
+	
 zamienLiczbyNaEmoji = (input) ->
   switch input
     when 1
