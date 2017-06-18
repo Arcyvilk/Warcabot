@@ -106,6 +106,10 @@ aiWykonujeRuch = () ->
   output
   
 zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza = (plansza, pozycjaStartowa, pozycjaWynikowa, gracz) ->
+	if przeciwnyPionekJestZbity(pozycjaStartowa, pozycjaWynikowa, plansza)
+		pozycjaZbijanegoPionkaX = parseInt(pozycjaWynikowa[0]) + parseInt((pozycjaStartowa[0] - (pozycjaWynikowa[0])) / 2)
+		pozycjaZbijanegoPionkaY = parseInt(pozycjaWynikowa[1]) + parseInt((pozycjaStartowa[1] - (pozycjaWynikowa[1])) / 2)
+		plansza[pozycjaZbijanegoPionkaX-1][pozycjaZbijanegoPionkaY-1] = ''
 	plansza[pozycjaWynikowa[0] - 1][pozycjaWynikowa[1] - 1] = plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1]
 	plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] = ''
 	if plansza[pozycjaWynikowa[0] - 1][pozycjaWynikowa[1] - 1] == "O" 
@@ -152,31 +156,35 @@ poleJestZajetePrzezObcyPionek = (input) ->
     return true
   false
 
-wybranePoleSpelniaZasadyGry = (pozycjaStartowa, pozycjaWyjsciowa, plansza) ->
+przeciwnyPionekJestZbity = (pozycjaStartowa, pozycjaWynikowa, plansza) ->
+	pionek=plansza[pozycjaStartowa[0]-1][pozycjaStartowa[1]-1]
+	potencjalnaPozycjaWrogiegoPionkaX = parseInt(pozycjaWynikowa[0]) + parseInt((pozycjaStartowa[0] - (pozycjaWynikowa[0])) / 2)
+	potencjalnaPozycjaWrogiegoPionkaY = parseInt(pozycjaWynikowa[1]) + parseInt((pozycjaStartowa[1] - (pozycjaWynikowa[1])) / 2)
+	if plansza[potencjalnaPozycjaWrogiegoPionkaX-1][potencjalnaPozycjaWrogiegoPionkaY-1].indexOf(wrogiPionek(pionek)) != -1
+		return true
+	return false
+	
+wybranePoleSpelniaZasadyGry = (pozycjaStartowa, pozycjaWynikowa, plansza) ->
 	pionek=plansza[pozycjaStartowa[0]-1][pozycjaStartowa[1]-1]
 	#jesli nie porusza sie po przekatnej
-	if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) != Math.abs(pozycjaStartowa[1] - (pozycjaWyjsciowa[1]))
+	if Math.abs(pozycjaStartowa[0] - (pozycjaWynikowa[0])) != Math.abs(pozycjaStartowa[1] - (pozycjaWynikowa[1]))
 		return false
 	#damka (moze bic we wszystkie kierunki)
 	if pionek.indexOf('*') != -1
-		if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
+		if Math.abs(pozycjaStartowa[0] - (pozycjaWynikowa[0])) == 1
 			return true
-		if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
-			potencjalnaPozycjaWrogiegoPionkaX = parseInt(pozycjaWyjsciowa[0]) + parseInt((pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) / 2)
-			potencjalnaPozycjaWrogiegoPionkaY = parseInt(pozycjaWyjsciowa[1]) + parseInt((pozycjaStartowa[1] - (pozycjaWyjsciowa[1])) / 2)
-			if plansza[potencjalnaPozycjaWrogiegoPionkaX-1][potencjalnaPozycjaWrogiegoPionkaY-1].indexOf(wrogiPionek(pionek)) != -1
+		if Math.abs(pozycjaStartowa[0] - (pozycjaWynikowa[0])) == 2
+			if przeciwnyPionekJestZbity(pozycjaStartowa, pozycjaWynikowa, plansza)
 				return true
 			return false
 	#zwykly pionek (moze bic tylko do przodu)
 	if pionek != ''
-		if pozycjaStartowa[0] < pozycjaWyjsciowa[0]
+		if pozycjaStartowa[0] < pozycjaWynikowa[0]
 			return false
-		if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 1
+		if Math.abs(pozycjaStartowa[0] - (pozycjaWynikowa[0])) == 1
 			return true
-		if Math.abs(pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) == 2
-			potencjalnaPozycjaWrogiegoPionkaX = parseInt(pozycjaWyjsciowa[0]) + parseInt((pozycjaStartowa[0] - (pozycjaWyjsciowa[0])) / 2)
-			potencjalnaPozycjaWrogiegoPionkaY = parseInt(pozycjaWyjsciowa[1]) + parseInt((pozycjaStartowa[1] - (pozycjaWyjsciowa[1])) / 2)
-			if plansza[potencjalnaPozycjaWrogiegoPionkaX-1][potencjalnaPozycjaWrogiegoPionkaY-1].indexOf(wrogiPionek(pionek)) != -1
+		if Math.abs(pozycjaStartowa[0] - (pozycjaWynikowa[0])) == 2
+			if przeciwnyPionekJestZbity(pozycjaStartowa, pozycjaWynikowa, plansza)
 				return true
 			return false
 	return true
