@@ -28,9 +28,11 @@ module.exports = (warcabot) ->
 			"\nPrzegrywa ten, kto stracił wszystkie pionki."+
 			"\nMożna bić tylko pojedyncze pionki, bo zabrakło mi czasu na porządne zaimplementowanie zasad.")
 	warcabot.respond /ruch (.*)/i, (res) ->
-		res.send(graczWykonujeRuch(res.match[1]))
-		res.send(":hourglass: Oczekiwanie na ruch Warcabota...")
-		res.send(aiWykonujeRuch())
+		ruchGracza = graczWykonujeRuch(res.match[1])
+		res.send(ruchGracza)
+		if !ruchGracza.startsWith('[BŁĄD]')
+			res.send(":hourglass: Oczekiwanie na ruch Warcabota...")
+			res.send(aiWykonujeRuch())
 #----------------------------------------------------------------------
 	
 planszaZapisana = undefined
