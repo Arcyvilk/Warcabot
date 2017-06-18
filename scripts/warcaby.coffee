@@ -3,13 +3,13 @@
 #
 # Notes:
 #   Warcaby.
-#
-#   These are from the scripting documentation: https://github.com/github/hubot/blob/master/docs/scripting.md
 #-----------------------------------------------------------
 
 module.exports = (warcabot) ->
 	warcabot.respond /start/i, (res) ->
 		res.send nowaGra()
+	warcabot.respond /test/i, (res) ->
+		res.send planszaZapisana
 	warcabot.respond /plansza/i, (res) ->
 		if planszaZapisana == undefined
 			res.send "Nie jesteś obecnie w trakcie żadnej gry."
@@ -39,14 +39,14 @@ planszaZapisana = undefined
 
 nowaGra = () ->
 	planszaNowa = 
-		[["","X","","X","","X","","X"],
-		["X","","X","","X","","X",""],
+		[["","","","X","","X","","X"],
+		["X","","O","","X","","X",""],
 		["","X","","X","","X","","X"],
 		["","","","","","","",""],
 		["","","","","","","",""],
 		["O","","O","","O","","O",""],
-		["","O","","O","","O","","O"],
-		["O","","O","","O","","O",""]]
+		["","X","","O","","O","","O"],
+		["O","","","","O","","O",""]]
 	planszaZapisana = planszaNowa
 	planszaRysuj(planszaNowa)
 
@@ -106,9 +106,15 @@ aiWykonujeRuch = () ->
   output
   
 zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza = (plansza, pozycjaStartowa, pozycjaWynikowa, gracz) ->
-  plansza[pozycjaWynikowa[0] - 1][pozycjaWynikowa[1] - 1] = plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1]
-  plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] = ''
-  plansza
+	plansza[pozycjaWynikowa[0] - 1][pozycjaWynikowa[1] - 1] = plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1]
+	plansza[pozycjaStartowa[0] - 1][pozycjaStartowa[1] - 1] = ''
+	if plansza[pozycjaWynikowa[0] - 1][pozycjaWynikowa[1] - 1] == "O" 
+		if pozycjaWynikowa[0]-1 == 0
+			plansza[pozycjaWynikowa[0] - 1][pozycjaWynikowa[1] - 1] = "O*"
+	if plansza[pozycjaWynikowa[0] - 1][pozycjaWynikowa[1] - 1] == "X" 
+		if pozycjaWynikowa[0]-1 == 7
+			plansza[pozycjaWynikowa[0] - 1][pozycjaWynikowa[1] - 1] = "X*"
+	plansza
 #-------------------------------------------------------------------------------------
   
 inputRozdzielonyStrzalka = (input) ->
