@@ -30,23 +30,23 @@ module.exports = (warcabot) ->
 	warcabot.respond /ruch (.*)/i, (res) ->
 		ruchGracza = graczWykonujeRuch(res.match[1])
 		res.send(ruchGracza)
-		#if !ruchGracza.startsWith('[BŁĄD]')
-		#	res.send ":hourglass: Oczekiwanie na ruch Warcabota..."
-		#	res.send aiWykonujeRuch()
+		if !ruchGracza.startsWith('[BŁĄD]')
+			res.send ":hourglass: Oczekiwanie na ruch Warcabota..."
+			res.send aiWykonujeRuch()
 #----------------------------------------------------------------------
 	
 planszaZapisana = undefined
 
 nowaGra = () ->
 	planszaNowa = 
-		[["","","","X","","X","","X"],
-		["X","","O","","X","","X",""],
+		[["","X","","X","","X","","X"],
+		["X","","X","","X","","X",""],
 		["","X","","X","","X","","X"],
 		["","","","","","","",""],
 		["","","","","","","",""],
 		["O","","O","","O","","O",""],
-		["","X","","O","","O","","O"],
-		["O","","","","O","","O",""]]
+		["","O","","O","","O","","O"],
+		["O","","O","","O","","O",""]]
 	planszaZapisana = planszaNowa
 	planszaRysuj(planszaNowa)
 
@@ -54,24 +54,40 @@ planszaRysuj = (plansza) ->
 	output = ':black_large_square::one::two::three::four::five::six::seven::eight::black_large_square:'
 	i = 0
 	while i < 8
-		output += '\n' + zamienLiczbyNaEmoji(i + 1)
+		#output += '\n' + zamienLiczbyNaEmoji(i + 1)
+		output += '\n' + (i + 1) + "|"
 		j = 0
 		while j < 8
+			#if plansza[i][j] == 'X'
+			#	output += ':black_circle:'
+			#if plansza[i][j] == 'X*'
+			#	output += ':large_blue_circle:'
+			#if plansza[i][j] == 'O'
+			#	output += ':white_circle:'
+			#if plansza[i][j] == 'O*'
+			#	output += ':red_circle:'
+			#if plansza[i][j] == ''
+			#	if (i + j) % 2 == 0
+			#		output += ':white_large_square:'
+			#	else
+			#		output += ':black_large_square:'
+			#j++
 			if plansza[i][j] == 'X'
-				output += ':black_circle:'
+				output += ' X |'
 			if plansza[i][j] == 'X*'
-				output += ':large_blue_circle:'
+				output += ' X*|'
 			if plansza[i][j] == 'O'
-				output += ':white_circle:'
+				output += ' O |'
 			if plansza[i][j] == 'O*'
-				output += ':red_circle:'
+				output += ' O*|'
 			if plansza[i][j] == ''
 				if (i + j) % 2 == 0
-					output += ':white_large_square:'
+					output += '   |'
 				else
-					output += ':black_large_square:'
+					output += '   |'
 			j++
-		output += zamienLiczbyNaEmoji(i + 1)
+		#output += zamienLiczbyNaEmoji(i + 1)
+		output += (i + 1) + "\n-----------------------------------"
 		i++
 	output + '\n:black_large_square::one::two::three::four::five::six::seven::eight::black_large_square:\n'
 
