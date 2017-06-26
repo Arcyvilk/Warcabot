@@ -56,40 +56,40 @@ planszaRysuj = (plansza) ->
 	output = ':black_large_square::one::two::three::four::five::six::seven::eight::black_large_square:'
 	i = 0
 	while i < 8
-		#output += '\n' + zamienLiczbyNaEmoji(i + 1)
-		output += '\n' + (i + 1) + "|"
+		output += '\n' + zamienLiczbyNaEmoji(i + 1)
+		#output += '\n' + (i + 1) + "|"
 		j = 0
 		while j < 8
-			#if plansza[i][j] == 'X'
-			#	output += ':black_circle:'
-			#if plansza[i][j] == 'X*'
-			#	output += ':large_blue_circle:'
-			#if plansza[i][j] == 'O'
-			#	output += ':white_circle:'
-			#if plansza[i][j] == 'O*'
-			#	output += ':red_circle:'
-			#if plansza[i][j] == ''
-			#	if (i + j) % 2 == 0
-			#		output += ':white_large_square:'
-			#	else
-			#		output += ':black_large_square:'
-			#j++
 			if plansza[i][j] == 'X'
-				output += ' X |'
+				output += ':black_circle:'
 			if plansza[i][j] == 'X*'
-				output += ' X*|'
+				output += ':large_blue_circle:'
 			if plansza[i][j] == 'O'
-				output += ' O |'
+				output += ':white_circle:'
 			if plansza[i][j] == 'O*'
-				output += ' O*|'
+				output += ':red_circle:'
 			if plansza[i][j] == ''
 				if (i + j) % 2 == 0
-					output += '   |'
+					output += ':white_large_square:'
 				else
-					output += '   |'
+					output += ':black_large_square:'
 			j++
-		output += (i + 1) + "\n-----------------------------------"
-		#output += zamienLiczbyNaEmoji(i + 1)
+			#if plansza[i][j] == 'X'
+			#	output += ' X |'
+			#if plansza[i][j] == 'X*'
+			#	output += ' X*|'
+			#if plansza[i][j] == 'O'
+			#	output += ' O |'
+			#if plansza[i][j] == 'O*'
+			#	output += ' O*|'
+			#if plansza[i][j] == ''
+			#	if (i + j) % 2 == 0
+			#		output += '   |'
+			#	else
+			#		output += '   |'
+			#j++
+		#output += (i + 1) + "\n-----------------------------------"
+		output += zamienLiczbyNaEmoji(i + 1)
 		i++
 	output + '\n:black_large_square::one::two::three::four::five::six::seven::eight::black_large_square:\n'
 
