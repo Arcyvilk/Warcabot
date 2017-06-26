@@ -24,7 +24,9 @@ module.exports = (warcabot) ->
 			"\n`@warcabot git           `- załącza link do repozytorium"+
 			"\n`@warcabot ruch x,y->a,b `- ruch pionka z pozycji [X,Y] na pozycję [A,B]"+
 			"\n\n*Zasady gry:*"+
-			"\nJesteś graczem białym. Można poruszać pionkami tylko po skosie i tylko w przód, chyba że bijesz/grasz damką. "+
+			"\nJesteś graczem białym. "+
+			"\nPionki mogą poruszać się tylko o jedno pole, ewentualnie o dwa, jeśli coś biją."+
+			"\nPionki poruszają się tylko po skosie. Zwykłe pionki tylko w przód (również przy biciu), damki i w przód, i w tył. "+
 			"\nPrzegrywa ten, kto stracił wszystkie pionki."+
 			"\nMożna bić tylko pojedyncze pionki, bo zabrakło mi czasu na porządne zaimplementowanie zasad.")
 	warcabot.respond /ruch (.*)/i, (res) ->
