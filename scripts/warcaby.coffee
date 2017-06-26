@@ -33,9 +33,11 @@ module.exports = (warcabot) ->
 		if !ruchGracza.startsWith('[BŁĄD]')
 			res.send ":hourglass: Oczekiwanie na ruch Warcabota..."
 			res.send aiWykonujeRuch()
+			res.send "Twoja kolej!"
 #----------------------------------------------------------------------
 	
 planszaZapisana = undefined
+legitneRuchy = []
 
 nowaGra = () ->
 	planszaNowa = 
@@ -58,34 +60,34 @@ planszaRysuj = (plansza) ->
 		output += '\n' + (i + 1) + "|"
 		j = 0
 		while j < 8
-			#if plansza[i][j] == 'X'
-			#	output += ':black_circle:'
-			#if plansza[i][j] == 'X*'
-			#	output += ':large_blue_circle:'
-			#if plansza[i][j] == 'O'
-			#	output += ':white_circle:'
-			#if plansza[i][j] == 'O*'
-			#	output += ':red_circle:'
-			#if plansza[i][j] == ''
-			#	if (i + j) % 2 == 0
-			#		output += ':white_large_square:'
-			#	else
-			#		output += ':black_large_square:'
-			#j++
 			if plansza[i][j] == 'X'
-				output += ' X |'
+				output += ':black_circle:'
 			if plansza[i][j] == 'X*'
-				output += ' X*|'
+				output += ':large_blue_circle:'
 			if plansza[i][j] == 'O'
-				output += ' O |'
+				output += ':white_circle:'
 			if plansza[i][j] == 'O*'
-				output += ' O*|'
+				output += ':red_circle:'
 			if plansza[i][j] == ''
 				if (i + j) % 2 == 0
-					output += '   |'
+					output += ':white_large_square:'
 				else
-					output += '   |'
+					output += ':black_large_square:'
 			j++
+			#if plansza[i][j] == 'X'
+			#	output += ' X |'
+			#if plansza[i][j] == 'X*'
+			#	output += ' X*|'
+			#if plansza[i][j] == 'O'
+			#	output += ' O |'
+			#if plansza[i][j] == 'O*'
+			#	output += ' O*|'
+			#if plansza[i][j] == ''
+			#	if (i + j) % 2 == 0
+			#		output += '   |'
+			#	else
+			#		output += '   |'
+			#j++
 		#output += zamienLiczbyNaEmoji(i + 1)
 		output += (i + 1) + "\n-----------------------------------"
 		i++
@@ -117,10 +119,84 @@ graczWykonujeRuch = (input) ->
 	plansza=zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza(plansza, pozycjaStartowa, pozycjaWynikowa, "O")
 	return planszaRysuj(plansza)  
 
-aiWykonujeRuch = () ->
-	output = 'Not implemented yet.'
+aiWykonujeRuch = () -> 
+	plansza = planszaZapisana
+	legitneRuchy = []
+	console.log AIszukaSwoichPionkow(plansza)
+	ruch=Math.floor(Math.random() * (legitneRuchy.length-1))
+	plansza=zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza(plansza, [(legitneRuchy[ruch][0] + 1),(legitneRuchy[ruch][1] + 1)],[(legitneRuchy[ruch][2] + 1),(legitneRuchy[ruch][3] + 1)], "X")
+	return planszaRysuj(plansza)
+	#AILiczyWartoscTablicy
+	
+AIszukaSwoichPionkow = (plansza) ->
+	i = 0
+	while i < 8
+		j = 0
+		while j < 8
+			if plansza[i][j].startsWith('X')
+				AIszukaDostepnychRuchowPionka(plansza, i, j)
+			j++
+		i++
+	n = 0
+	output = ""
+	while n < legitneRuchy.length
+		output += 'Mozliwe ruchy: ' + (legitneRuchy[n][0] + 1) + ',' + (legitneRuchy[n][1] + 1) + '->' + (legitneRuchy[n][2] + 1) + ',' + (legitneRuchy[n][3] + 1) + '\n'
+		n++
 	output
-  
+
+AIszukaDostepnychRuchowPionka = (plansza, i, j) ->
+	pozycje = [
+		[
+			-1
+			-1
+		]
+		[
+			1
+			-1
+		]
+		[
+			-1
+			1
+		]
+		[
+			1
+			1
+		]
+		[
+			-2
+			-2
+		]
+		[
+			2
+			-2
+		]
+		[
+			-2
+			2
+		]
+		[
+			2
+			2
+		]
+	]
+	#console.log("-> BADAM PIONEK "+(i+1)+","+(j+1))
+	x = 0
+	while x < 8
+		testowaPozycjaX=pozycje[x][0] + i
+		testowaPozycjaY=pozycje[x][1] + j
+		if pozycjePoprawne([testowaPozycjaX+1,testowaPozycjaY+1])
+			#console.log('pozycja '+(testowaPozycjaX+1)+","+(testowaPozycjaY+1)+" jest poprawna")
+			if poleJestPuste(plansza[testowaPozycjaX][testowaPozycjaY])
+				#console.log('pozycja '+(testowaPozycjaX+1)+","+(testowaPozycjaY+1)+" jest pusta i to dobrze")
+				#console.log("Badamy pionek "+[i+1,j+1]+" i czy moze wejsc na "+[testowaPozycjaX+1,testowaPozycjaY+1])
+				if wybranePoleSpelniaZasadyGry([i+1,j+1],[testowaPozycjaX+1,testowaPozycjaY+1], plansza)
+					#console.log('pozycja '+(testowaPozycjaX+1)+","+(testowaPozycjaY+1)+" spelnia zasady")
+					ruch = [i, j, testowaPozycjaX, testowaPozycjaY]
+					legitneRuchy.push ruch
+		x++
+	legitneRuchy
+ 
+ 
 zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza = (plansza, pozycjaStartowa, pozycjaWynikowa, gracz) ->
 	if przeciwnyPionekJestZbity(pozycjaStartowa, pozycjaWynikowa, plansza)
 		pozycjaZbijanegoPionkaX = parseInt(pozycjaWynikowa[0]) + parseInt((pozycjaStartowa[0] - (pozycjaWynikowa[0])) / 2)
@@ -195,8 +271,12 @@ wybranePoleSpelniaZasadyGry = (pozycjaStartowa, pozycjaWynikowa, plansza) ->
 			return false
 	#zwykly pionek (moze bic tylko do przodu)
 	if pionek != ''
-		if pozycjaStartowa[0] < pozycjaWynikowa[0]
-			return false
+		if pionek.startsWith('O')
+			if pozycjaStartowa[0] < pozycjaWynikowa[0]
+				return false
+		if pionek.startsWith('X')
+			if pozycjaStartowa[0] > pozycjaWynikowa[0]
+				return false	
 		if Math.abs(pozycjaStartowa[0] - (pozycjaWynikowa[0])) == 1
 			return true
 		if Math.abs(pozycjaStartowa[0] - (pozycjaWynikowa[0])) == 2
