@@ -34,7 +34,6 @@ module.exports = (warcabot) ->
 			res.send ":hourglass: Oczekiwanie na ruch Warcabota..."
 			ruchAI = aiWykonujeRuch()
 			res.send ruchAI
-			res.send "Twoja kolej!"
 #----------------------------------------------------------------------
 	
 planszaZapisana = undefined
@@ -42,14 +41,14 @@ legitneRuchy = []
 
 nowaGra = () ->
 	planszaNowa = 
-		[["","X","","X","","X","","X"],
-		["X","","X","","X","","X",""],
-		["","X","","X","","X","","X"],
-		["","","","","","","",""],
+		[["","X","","","","X","","X"],
+		["X","","O","","X","","X",""],
+		["","X","","","","X","","X"],
+		["","","O*","","","","O",""],
 		["","","","","","","",""],
 		["O","","O","","O","","O",""],
-		["","O","","O","","O","","O"],
-		["O","","O","","O","","O",""]]
+		["","O","","X","","O","","O"],
+		["O","","","","O","","O",""]]
 	planszaZapisana = planszaNowa
 	planszaRysuj(planszaNowa)
 
@@ -57,43 +56,64 @@ planszaRysuj = (plansza) ->
 	output = ':black_large_square::one::two::three::four::five::six::seven::eight::black_large_square:'
 	i = 0
 	while i < 8
-		output += '\n' + zamienLiczbyNaEmoji(i + 1)
-		#output += '\n' + (i + 1) + "|"
+		#output += '\n' + zamienLiczbyNaEmoji(i + 1)
+		output += '\n' + (i + 1) + "|"
 		j = 0
 		while j < 8
-			if plansza[i][j] == 'X'
-				output += ':black_circle:'
-			if plansza[i][j] == 'X*'
-				output += ':large_blue_circle:'
-			if plansza[i][j] == 'O'
-				output += ':white_circle:'
-			if plansza[i][j] == 'O*'
-				output += ':red_circle:'
-			if plansza[i][j] == ''
-				if (i + j) % 2 == 0
-					output += ':white_large_square:'
-				else
-					output += ':black_large_square:'
-			j++
 			#if plansza[i][j] == 'X'
-			#	output += ' X |'
+			#	output += ':black_circle:'
 			#if plansza[i][j] == 'X*'
-			#	output += ' X*|'
+			#	output += ':large_blue_circle:'
 			#if plansza[i][j] == 'O'
-			#	output += ' O |'
+			#	output += ':white_circle:'
 			#if plansza[i][j] == 'O*'
-			#	output += ' O*|'
+			#	output += ':red_circle:'
 			#if plansza[i][j] == ''
 			#	if (i + j) % 2 == 0
-			#		output += '   |'
+			#		output += ':white_large_square:'
 			#	else
-			#		output += '   |'
+			#		output += ':black_large_square:'
 			#j++
-		output += zamienLiczbyNaEmoji(i + 1)
-		#output += (i + 1) + "\n-----------------------------------"
+			if plansza[i][j] == 'X'
+				output += ' X |'
+			if plansza[i][j] == 'X*'
+				output += ' X*|'
+			if plansza[i][j] == 'O'
+				output += ' O |'
+			if plansza[i][j] == 'O*'
+				output += ' O*|'
+			if plansza[i][j] == ''
+				if (i + j) % 2 == 0
+					output += '   |'
+				else
+					output += '   |'
+			j++
+		output += (i + 1) + "\n-----------------------------------"
+		#output += zamienLiczbyNaEmoji(i + 1)
 		i++
 	output + '\n:black_large_square::one::two::three::four::five::six::seven::eight::black_large_square:\n'
 
+czyKtosWygral = (plansza) ->
+	liczbaBialychICzarnychPionkow = [
+		0
+		0
+	]
+	i = 0
+	while i < 8
+		j = 0
+		while j < 8
+			if plansza[i][j].indexOf('O') == 0
+				liczbaBialychICzarnychPionkow[0]++
+			if plansza[i][j].indexOf('X') == 0
+				liczbaBialychICzarnychPionkow[1]++
+			j++
+		i++
+	if liczbaBialychICzarnychPionkow[0] == 0 #nie zostal juz zaden bialy pionek
+		return 'Czarne wygraly!'
+	if liczbaBialychICzarnychPionkow[1] == 0 #nie zostal juz zaden czarny pionek
+		return 'Biale wygraly!'
+	return ''
+	
 graczWykonujeRuch = (input) ->
 	pozycjaStartowa = undefined
 	pozycjaWynikowa = undefined
@@ -118,17 +138,17 @@ graczWykonujeRuch = (input) ->
 	if !wybranePoleSpelniaZasadyGry(pozycjaStartowa, pozycjaWynikowa, plansza)
 		return '[BŁĄD] Ruch niezgodny z zasadami!'
 	plansza=zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza(plansza, pozycjaStartowa, pozycjaWynikowa, "O")
-	return planszaRysuj(plansza)  
+	return planszaRysuj(plansza) + czyKtosWygral(plansza)
 
 aiWykonujeRuch = () -> 
 	plansza = planszaZapisana
 	legitneRuchy = []
 	AIszukaSwoichPionkow(plansza)
-	ruch=Math.floor(Math.random() * (legitneRuchy.length-1))
+	ruch=AIdecydujeORuchu();
 	plansza=zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza(plansza, [(legitneRuchy[ruch][0] + 1),(legitneRuchy[ruch][1] + 1)],[(legitneRuchy[ruch][2] + 1),(legitneRuchy[ruch][3] + 1)], "X")
-	return planszaRysuj(plansza)
+	return planszaRysuj(plansza) + czyKtosWygral(plansza)
 	#AILiczyWartoscTablicy
-	
+
 AIszukaSwoichPionkow = (plansza) ->
 	i = 0
 	while i < 8
@@ -138,12 +158,12 @@ AIszukaSwoichPionkow = (plansza) ->
 				AIszukaDostepnychRuchowPionka(plansza, i, j)
 			j++
 		i++
-	#n = 0
-	#output = ""
-	#while n < legitneRuchy.length
-	#	output += 'Mozliwe ruchy: ' + (legitneRuchy[n][0] + 1) + ',' + (legitneRuchy[n][1] + 1) + '->' + (legitneRuchy[n][2] + 1) + ',' + (legitneRuchy[n][3] + 1) + '\n'
-	#	n++
-	#output
+	n = 0
+	output = ""
+	while n < legitneRuchy.length
+		output += 'Mozliwe ruchy: ' + (legitneRuchy[n][0] + 1) + ',' + (legitneRuchy[n][1] + 1) + '->' + (legitneRuchy[n][2] + 1) + ',' + (legitneRuchy[n][3] + 1) + ' - priorytet ' +legitneRuchy[n][4]+'\n'
+		n++
+	console.log(output)
 
 AIszukaDostepnychRuchowPionka = (plansza, i, j) ->
 	pozycje = [
@@ -193,10 +213,37 @@ AIszukaDostepnychRuchowPionka = (plansza, i, j) ->
 				if wybranePoleSpelniaZasadyGry([i+1,j+1],[testowaPozycjaX+1,testowaPozycjaY+1], plansza)
 					#console.log('pozycja '+(testowaPozycjaX+1)+","+(testowaPozycjaY+1)+" spelnia zasady")
 					ruch = [i, j, testowaPozycjaX, testowaPozycjaY]
+					priorytet=ustalPriorytetRuchu(ruch, plansza)
+					ruch.push priorytet
 					legitneRuchy.push ruch
 		x++
 	legitneRuchy
- 
+
+ustalPriorytetRuchu = (ruch, plansza)	->
+	#priorytet ruchow:
+	#- zbicie damki
+	#- zbicie pionka bliskiego zostania damką (2->1)
+	#- zrobienie własnej damki (7->8)
+	#- usunięcie przeciwnego pionka
+	#- zwykly ruch
+	if (Math.sqrt((ruch[0]-ruch[2])*(ruch[0]-ruch[2]))) == 1 #zwykly niezbijajacy ruch
+		if (ruch[2] == 7) #jesli jest to pionek z szasa zostania damka
+			return '8'
+		return '1'
+	if (Math.sqrt((ruch[0]-ruch[2])*(ruch[0]-ruch[2]))) == 2 #cos jest zbijane!
+		pozycjaWrogiegoPionkaX = parseInt(ruch[2]) + parseInt((ruch[0] - (ruch[2])) / 2)
+		pozycjaWrogiegoPionkaY = parseInt(ruch[3]) + parseInt((ruch[1] - (ruch[3])) / 2)
+		if (plansza[pozycjaWrogiegoPionkaX][pozycjaWrogiegoPionkaY].indexOf('*') != -1) #tym zbijanym czyms jest damka
+			return '15'
+		if (pozycjaWrogiegoPionkaX == 1) #jesli wrogi pionek jest o krok od ostania damka
+			return '10'
+		return (8-pozycjaWrogiegoPionkaX) #priorytet zbijania zwyklych przeciwnych pionkow wzrasta wraz z ich bliskoscia zostania damka; max=6
+	return '0'
+	
+AIdecydujeORuchu = () ->
+	
+	ruch=Math.floor(Math.random() * (legitneRuchy.length-1))
+	ruch
  
 zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza = (plansza, pozycjaStartowa, pozycjaWynikowa, gracz) ->
 	if przeciwnyPionekJestZbity(pozycjaStartowa, pozycjaWynikowa, plansza)
@@ -212,43 +259,7 @@ zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza = (plansza, pozyc
 		if pozycjaWynikowa[0]-1 == 7
 			plansza[pozycjaWynikowa[0] - 1][pozycjaWynikowa[1] - 1] = "X*"
 	plansza
-#-------------------------------------------------------------------------------------
-  
-inputRozdzielonyStrzalka = (input) ->
-	if input.indexOf('->') != -1
-		return true
-	false
-
-podzielInput = (input) ->
-	output = input.split('->')
-	output
-
-pozycjePoprawne = (input) ->
-	for i of input
-		if input[i] < 1 or input[i] > 8
-			return false
-	true
-
-obiePozycjeRozdzielonePrzecinkiem = (input) ->
-	for i of input
-		if input[i].indexOf(',') == -1
-			return false
-	true
-  
-podzielPozycjeNaXiY = (input) ->
-	output = input.split(',')
-	output
-
-poleJestPuste = (input) ->
-	if !input
-		return true
-	false
-
-poleJestZajetePrzezObcyPionek = (input) ->
-	if input == 'X'
-		return true
-	false
-
+	
 przeciwnyPionekJestZbity = (pozycjaStartowa, pozycjaWynikowa, plansza) ->
 	pionek=plansza[pozycjaStartowa[0]-1][pozycjaStartowa[1]-1]
 	potencjalnaPozycjaWrogiegoPionkaX = parseInt(pozycjaWynikowa[0]) + parseInt((pozycjaStartowa[0] - (pozycjaWynikowa[0])) / 2)
@@ -285,6 +296,42 @@ wybranePoleSpelniaZasadyGry = (pozycjaStartowa, pozycjaWynikowa, plansza) ->
 				return true
 			return false
 	return true
+#-------------------------------------------------------------------------------------
+  
+inputRozdzielonyStrzalka = (input) ->
+	if input.indexOf('->') != -1
+		return true
+	false
+
+podzielInput = (input) ->
+	output = input.split('->')
+	output
+
+pozycjePoprawne = (input) ->
+	for i of input
+		if input[i] < 1 or input[i] > 8
+			return false
+	true
+
+obiePozycjeRozdzielonePrzecinkiem = (input) ->
+	for i of input
+		if input[i].indexOf(',') == -1
+			return false
+	true
+  
+podzielPozycjeNaXiY = (input) ->
+	output = input.split(',')
+	output
+
+poleJestPuste = (input) ->
+	if !input
+		return true
+	false
+
+poleJestZajetePrzezObcyPionek = (input) ->
+	if input == 'X'
+		return true
+	false
 
 #------------------------------------------------------------------------------------- 
  
