@@ -145,9 +145,9 @@ aiWykonujeRuch = () ->
 	legitneRuchy = []
 	AIszukaSwoichPionkow(plansza)
 	ruch=AIdecydujeORuchu();
-	plansza=zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza(plansza, [(legitneRuchy[ruch][0] + 1),(legitneRuchy[ruch][1] + 1)],[(legitneRuchy[ruch][2] + 1),(legitneRuchy[ruch][3] + 1)], "X")
+	#plansza=zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza(plansza, [(legitneRuchy[ruch][0] + 1),(legitneRuchy[ruch][1] + 1)],[(legitneRuchy[ruch][2] + 1),(legitneRuchy[ruch][3] + 1)], "X")
+	plansza=zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza(plansza, [(ruch[0] + 1),(ruch[1] + 1)],[(ruch[2] + 1),(ruch[3] + 1)], "X")
 	return planszaRysuj(plansza) + czyKtosWygral(plansza)
-	#AILiczyWartoscTablicy
 
 AIszukaSwoichPionkow = (plansza) ->
 	i = 0
@@ -228,23 +228,38 @@ ustalPriorytetRuchu = (ruch, plansza)	->
 	#- zwykly ruch
 	if (Math.sqrt((ruch[0]-ruch[2])*(ruch[0]-ruch[2]))) == 1 #zwykly niezbijajacy ruch
 		if (ruch[2] == 7) #jesli jest to pionek z szasa zostania damka
-			return '8'
-		return '1'
+			return 8
+		return 1
 	if (Math.sqrt((ruch[0]-ruch[2])*(ruch[0]-ruch[2]))) == 2 #cos jest zbijane!
 		pozycjaWrogiegoPionkaX = parseInt(ruch[2]) + parseInt((ruch[0] - (ruch[2])) / 2)
 		pozycjaWrogiegoPionkaY = parseInt(ruch[3]) + parseInt((ruch[1] - (ruch[3])) / 2)
 		if (plansza[pozycjaWrogiegoPionkaX][pozycjaWrogiegoPionkaY].indexOf('*') != -1) #tym zbijanym czyms jest damka
-			return '15'
+			return 15
 		if (pozycjaWrogiegoPionkaX == 1) #jesli wrogi pionek jest o krok od ostania damka
-			return '10'
+			return 10
 		return (8-pozycjaWrogiegoPionkaX) #priorytet zbijania zwyklych przeciwnych pionkow wzrasta wraz z ich bliskoscia zostania damka; max=6
-	return '0'
+	return 0
 	
-AIdecydujeORuchu = () ->
-	
-	ruch=Math.floor(Math.random() * (legitneRuchy.length-1))
-	ruch
- 
+AIdecydujeORuchu = ->
+	maxPriorytet = 0
+	ruchyONajwyzszymPriorytecie = []
+	ostatecznyWyborRuchu = 0
+	i = 0
+	while i < legitneRuchy.length
+		if (legitneRuchy[i][4] >= maxPriorytet)
+			console.log(legitneRuchy[i][4])
+			console.log(maxPriorytet)
+			maxPriorytet = legitneRuchy[i][4]
+		i++
+	j = 0
+	while j < legitneRuchy.length
+		if (legitneRuchy[j][4] == maxPriorytet)
+			ruch = legitneRuchy[j]
+			ruchyONajwyzszymPriorytecie.push ruch
+		j++
+	ostatecznyWyborRuchu = Math.floor(Math.random() * (ruchyONajwyzszymPriorytecie.length - 1))
+	ruchyONajwyzszymPriorytecie[ostatecznyWyborRuchu]
+
 zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza = (plansza, pozycjaStartowa, pozycjaWynikowa, gracz) ->
 	if przeciwnyPionekJestZbity(pozycjaStartowa, pozycjaWynikowa, plansza)
 		pozycjaZbijanegoPionkaX = parseInt(pozycjaWynikowa[0]) + parseInt((pozycjaStartowa[0] - (pozycjaWynikowa[0])) / 2)
