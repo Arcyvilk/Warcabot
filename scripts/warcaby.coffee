@@ -120,6 +120,8 @@ graczWykonujeRuch = (input) ->
 	pozycjaStartowa = undefined
 	pozycjaWynikowa = undefined
 	plansza = planszaZapisana
+	if !plansza
+		return '[BŁĄD] Nie jesteś w trakcie żadnej gry.'
 	if !inputRozdzielonyStrzalka(input)
 		return '[BŁĄD] Niepoprawny format. Pozycja oryginalna i wynikowa muszą być rozdzielone za pomocą -> .'
 	pozycja = podzielInput(input)
