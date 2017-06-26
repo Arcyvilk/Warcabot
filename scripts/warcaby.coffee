@@ -272,10 +272,10 @@ wybranePoleSpelniaZasadyGry = (pozycjaStartowa, pozycjaWynikowa, plansza) ->
 			return false
 	#zwykly pionek (moze bic tylko do przodu)
 	if pionek != ''
-		if pionek.startsWith('O')
+		if pionek.indexOf('O') != -1
 			if pozycjaStartowa[0] < pozycjaWynikowa[0]
 				return false
-		if pionek.startsWith('X')
+		if pionek.indexOf('X') != -1
 			if pozycjaStartowa[0] > pozycjaWynikowa[0]
 				return false	
 		if Math.abs(pozycjaStartowa[0] - (pozycjaWynikowa[0])) == 1
