@@ -32,7 +32,8 @@ module.exports = (warcabot) ->
 		res.send(ruchGracza)
 		if !ruchGracza.startsWith('[BŁĄD]')
 			res.send ":hourglass: Oczekiwanie na ruch Warcabota..."
-			res.send aiWykonujeRuch()
+			ruchAI = aiWykonujeRuch()
+			res.send ruchAI
 			res.send "Twoja kolej!"
 #----------------------------------------------------------------------
 	
@@ -122,7 +123,7 @@ graczWykonujeRuch = (input) ->
 aiWykonujeRuch = () -> 
 	plansza = planszaZapisana
 	legitneRuchy = []
-	console.log AIszukaSwoichPionkow(plansza)
+	AIszukaSwoichPionkow(plansza)
 	ruch=Math.floor(Math.random() * (legitneRuchy.length-1))
 	plansza=zupdatujPlanszeNaPodstawiePozycjiStartowejIWynikowejOrazGracza(plansza, [(legitneRuchy[ruch][0] + 1),(legitneRuchy[ruch][1] + 1)],[(legitneRuchy[ruch][2] + 1),(legitneRuchy[ruch][3] + 1)], "X")
 	return planszaRysuj(plansza)
@@ -137,12 +138,12 @@ AIszukaSwoichPionkow = (plansza) ->
 				AIszukaDostepnychRuchowPionka(plansza, i, j)
 			j++
 		i++
-	n = 0
-	output = ""
-	while n < legitneRuchy.length
-		output += 'Mozliwe ruchy: ' + (legitneRuchy[n][0] + 1) + ',' + (legitneRuchy[n][1] + 1) + '->' + (legitneRuchy[n][2] + 1) + ',' + (legitneRuchy[n][3] + 1) + '\n'
-		n++
-	output
+	#n = 0
+	#output = ""
+	#while n < legitneRuchy.length
+	#	output += 'Mozliwe ruchy: ' + (legitneRuchy[n][0] + 1) + ',' + (legitneRuchy[n][1] + 1) + '->' + (legitneRuchy[n][2] + 1) + ',' + (legitneRuchy[n][3] + 1) + '\n'
+	#	n++
+	#output
 
 AIszukaDostepnychRuchowPionka = (plansza, i, j) ->
 	pozycje = [
