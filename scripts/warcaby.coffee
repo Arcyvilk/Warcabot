@@ -30,7 +30,7 @@ module.exports = (warcabot) ->
 	warcabot.respond /ruch (.*)/i, (res) ->
 		ruchGracza = graczWykonujeRuch(res.match[1])
 		res.send(ruchGracza)
-		if !ruchGracza.startsWith('[BŁĄD]')
+		if ruchGracza.indexOf('[BŁĄD]') == -1
 			res.send ":hourglass: Oczekiwanie na ruch Warcabota..."
 			ruchAI = aiWykonujeRuch()
 			res.send ruchAI
@@ -134,7 +134,7 @@ AIszukaSwoichPionkow = (plansza) ->
 	while i < 8
 		j = 0
 		while j < 8
-			if plansza[i][j].startsWith('X')
+			if plansza[i][j].indexOf('X') == 0
 				AIszukaDostepnychRuchowPionka(plansza, i, j)
 			j++
 		i++
